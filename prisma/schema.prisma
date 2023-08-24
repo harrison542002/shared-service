@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  user_id String @db.VarChar(45) @id @unique
+  user_name String @db.VarChar(45)
+  email String @db.VarChar(100) @unique
+  password String @db.VarChar(300)
+  bio String? @db.VarChar(400)
+  token String @db.VarChar(400) @unique
+  user_type UserType @default(NORMAL)
+  status UserStatus @default(No_Verify)
+  created_at DateTime @default(now())
+  updated_at DateTime? @updatedAt  
+  updated_by String? @db.VarChar(45)
+
+  posts Post[]
+}
+
+model Admin{
+  login_id String @db.VarChar(8) @id @unique
+  name String @db.VarChar(45) @unique
+  password String @db.VarChar(300)
+  token String? @db.VarChar(400) @unique
+  created_at DateTime @default(now())
+
+  categoriesCreatedBy Category[] @relation("categoryCreatedBy")
+  categoriesUpdatedBy Category[] @relation("categoryUpdatedBy")
+}
+
+model Post{
+  post_id String @db.VarChar(45) @id @unique
+  title String @db.VarChar(100)
+  content String @db.VarChar(600)
+  status PostStatus
+  reported_user_ids Json?
+  category_id String @db.VarChar(45)
+  created_at DateTime @default(now())
+  created_by String @db.VarChar(45)
+  updated_at DateTime? @updatedAt
+  updated_by String? @db.VarChar(45)
+
+  author User @relation(fields: [created_by], references: [user_id], onDelete: Cascade)
+  category Category @relation(fields: [category_id],references: [category_id],onDelete: Cascade)
+}
+
+model Category{
+  category_id	String @db.VarChar(45) @id @unique
+  name	String @db.VarChar(45) @unique
+  created_at	DateTime @default(now())
+  created_by	String @db.VarChar(45)
+  updated_at	DateTime? @updatedAt
+  updated_by	String @db.VarChar(45)
+
+  author Admin @relation("categoryCreatedBy",fields: [created_by], references: [name], onDelete: Cascade)
+  updater Admin @relation("categoryUpdatedBy",fields: [updated_by], references: [name], onDelete: Cascade)
+  
+  posts Post[]
+}
+
+enum UserType{
+  NORMAL
+  PREMIUM
+}
+
+enum UserStatus{
+  No_Verify
+  Verify
+  Suspended
+}
+
+enum PostStatus{
+  DRAFT
+  PUBLISHED
+  REPORTED
+}
+
+
