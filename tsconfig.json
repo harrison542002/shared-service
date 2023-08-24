@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "Node",
+    "sourceMap": true,
+    "baseUrl": "src",
+    "outDir": "dist",
+    "noImplicitAny": true,
+    "esModuleInterop": true
+  },
+  "include": ["src/**/*"],
+  "files": ["src/custom/custom.d.ts"]
+}
