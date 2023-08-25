@@ -10,7 +10,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon",
     "build": "tsc",
-    "db:start": "docker-compose up -d"
+    "db:start": "docker-compose up -d",
+    "prestart": "npm run db:start && timeout 15",
+    "start": "prisma db push && prisma db seed && ts-node-esm .\\src\\index.ts"
   },
   "keywords": [],
   "author": "",
