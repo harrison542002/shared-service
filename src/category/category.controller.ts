@@ -2,9 +2,6 @@ import { Response, Request } from "express";
 import * as CategoryService from "./category.services";
 import { validationResult } from "express-validator";
 
-/**
- * GET : Get lists of categories
- */
 export const getListsOfCategories = async (
   request: Request,
   response: Response
@@ -22,10 +19,6 @@ export const getListsOfCategories = async (
   }
 };
 
-/**
- * GET : Get single category by id
- * @param {string} id - id of the category
- */
 export const getSingleCategory = async (
   request: Request,
   response: Response
@@ -45,12 +38,6 @@ export const getSingleCategory = async (
   }
 };
 
-/**
- * POST : Create a new category.
- * @param {string} name - name of a category
- * @param {string} created_by - id of creator
- * @param {string} updated_by - id of updater
- */
 export const createNewCategory = async (
   request: Request,
   response: Response
@@ -61,7 +48,10 @@ export const createNewCategory = async (
     return response.status(400).json({ error: errors.array() });
   }
 
-  const { name, created_by, updated_by } = request.body;
+  const { name } = request.body;
+
+  //Fetch login_id from jwt payload to insert in create_by and upated_by fields.
+  const admin_name = request.jwtPayload.name;
   try {
     //Check if a category with this name existed in the database.
     const category = await CategoryService.getCategoryByName(
@@ -76,8 +66,8 @@ export const createNewCategory = async (
     //Create a new category.
     const newCategory = await CategoryService.createCategory({
       name,
-      created_by,
-      updated_by,
+      created_by: admin_name,
+      updated_by: admin_name,
     });
     return response.status(200).json(newCategory);
   } catch (error) {
@@ -85,12 +75,6 @@ export const createNewCategory = async (
   }
 };
 
-/**
- * PUT : Update the category.
- * @path_variable {string} id : category_id of category
- * @param {string} name - name of a category
- * @param {string} updated_by - id of updater
- */
 export const updateCategory = async (request: Request, response: Response) => {
   //Check if there is any error in validation of body data.
   const errors = validationResult(request);
@@ -98,7 +82,11 @@ export const updateCategory = async (request: Request, response: Response) => {
     return response.status(400).json({ error: errors.array() });
   }
 
-  const { name, updated_by } = request.body;
+  const { name } = request.body;
+
+  //Fetch name from JWT Payload, to update the update_by field.
+  const admin_name = request.jwtPayload.name;
+
   try {
     //Check if a category with this name existed in the database.
     let category = await CategoryService.getCategoryByName(
@@ -124,7 +112,7 @@ export const updateCategory = async (request: Request, response: Response) => {
     //Update category.
     const updatedCategory = await CategoryService.updateCategory({
       name,
-      updated_by,
+      updated_by: admin_name,
       category_id: request.params.id,
     });
     return response.status(200).json(updatedCategory);
@@ -133,10 +121,6 @@ export const updateCategory = async (request: Request, response: Response) => {
   }
 };
 
-/**
- * DELETE : Delete a category by id
- * @path_variable {string} id : category_id of category
- */
 export const deleteCategory = async (request: Request, response: Response) => {
   try {
     //Check if a category with this id existed in the database.

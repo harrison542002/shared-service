@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { db } from "../utils/db.server";
+import { db } from "../utils";
 
 type Category = {
   name: string;
@@ -30,7 +30,9 @@ export const getCategoryByName = (
   return db.category.findUnique({
     where: {
       name: name,
-      category_id,
+      NOT: {
+        category_id,
+      },
     },
     select: {
       name: true,
