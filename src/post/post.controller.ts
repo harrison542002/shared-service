@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import * as PostService from "./post.services";
 import * as UserService from "../user/user.services";
-import { validationResult } from "express-validator";
 import { PostStatus } from "@prisma/client";
 import { Prisma } from "@prisma/client";
 
@@ -56,12 +55,6 @@ export const createNewPost = async (request: Request, response: Response) => {
   const { user_id } = request.jwtPayload;
 
   try {
-    //Check if there is any error in request body payload.
-    const errors = validationResult(request);
-    if (!errors.isEmpty()) {
-      return response.status(400).json({ errors: errors.array() });
-    }
-
     //Get user input from request body.
     const { title, content, category_id } = request.body;
 
@@ -88,12 +81,6 @@ export const savePostAsDraft = async (request: Request, response: Response) => {
   const { user_id } = request.jwtPayload;
 
   try {
-    //Check if there is any error in request body payload.
-    const errors = validationResult(request);
-    if (!errors.isEmpty()) {
-      return response.status(400).json({ errors: errors.array() });
-    }
-
     //Get user input from request body.
     const { title, content, category_id } = request.body;
 
@@ -120,12 +107,6 @@ export const editPost = async (request: Request, response: Response) => {
   const { user_id } = request.jwtPayload;
 
   try {
-    //Check if there is any error in request body payload.
-    const errors = validationResult(request);
-    if (!errors.isEmpty()) {
-      return response.status(400).json({ errors: errors.array() });
-    }
-
     //Check if the post exist with current id
     const post = await PostService.getPostById(request.params.id);
     if (!post) {
@@ -134,9 +115,17 @@ export const editPost = async (request: Request, response: Response) => {
         .json({ error: { msg: "Post with this id does not exist." } });
     }
 
-    const changablePostPayload: PostService.ChangeablePost = request.body;
+    //Check if the updater is actually the author of current post.
+    if (post.created_by !== user_id) {
+      return response.status(403).json({
+        error: { msg: "Only the author of the post can edit the content." },
+      });
+    }
+
+    const { title, content, category_id } = request.body;
+
     const editedPost = await PostService.editPost(
-      changablePostPayload,
+      { title, content, category_id, updated_by: user_id },
       request.params.id
     );
     return response.status(200).json(editedPost);
@@ -150,13 +139,27 @@ export const editPost = async (request: Request, response: Response) => {
  */
 export const deletePost = async (request: Request, response: Response) => {
   try {
-    const { user_id } = request.jwtPayload;
+    const { user_id, login_id } = request.jwtPayload;
 
     //Check if the post exist with current id
-    const deletedPost = await PostService.deletePost(
-      request.params.id,
-      user_id
-    );
+    const post = await PostService.getPostById(request.params.id);
+    if (!post) {
+      return response
+        .status(403)
+        .json({ error: { msg: "Post with this id does not exist." } });
+    }
+
+    if (user_id) {
+      //check if the updater is actually the author of current post.
+      if (post.created_by !== user_id) {
+        return response.status(403).json({
+          error: { msg: "Only the author of the post can delete the content." },
+        });
+      }
+    } //else admin can delete the post.
+
+    //Check if the post exist with current id
+    const deletedPost = await PostService.deletePost(request.params.id);
 
     return response.status(200).json(deletedPost);
   } catch (error) {
@@ -165,7 +168,7 @@ export const deletePost = async (request: Request, response: Response) => {
 };
 
 /**
- * PUT : Change the status of post
+ * Report the post
  */
 export const reportPost = async (request: Request, response: Response) => {
   try {

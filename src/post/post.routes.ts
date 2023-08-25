@@ -1,6 +1,11 @@
 import express from "express";
 import * as PostController from "./post.controller";
-import { authenticateUserToken } from "../middleware/authenticate";
+import {
+  authenticateAdminToken,
+  authenticateUserToken,
+  checkWhetherUserIsVerified,
+  validateBodyData,
+} from "../middleware";
 import { body } from "./post.validator";
 
 const postRouter = express.Router();
@@ -17,6 +22,8 @@ postRouter.get("/:id", PostController.getSinglePostById);
 //Creat a new post
 postRouter.post(
   "/",
+  authenticateUserToken,
+  checkWhetherUserIsVerified,
   body("title", "Title Cannot be Empty.")
     .notEmpty()
     .isString()
@@ -38,13 +45,15 @@ postRouter.post(
     .isString()
     .withMessage("Category Id should be a string.")
     .isCategoryExist(),
-  authenticateUserToken,
+  validateBodyData,
   PostController.createNewPost
 );
 
 //Save post as draft
 postRouter.post(
   "/save-as-draft",
+  authenticateUserToken,
+  checkWhetherUserIsVerified,
   body("title", "Title Cannot be Empty.")
     .notEmpty()
     .isString()
@@ -66,13 +75,15 @@ postRouter.post(
     .isString()
     .withMessage("Category Id should be a string.")
     .isCategoryExist(),
-  authenticateUserToken,
+  validateBodyData,
   PostController.savePostAsDraft
 );
 
 //Edit post
 postRouter.put(
   "/:id",
+  authenticateUserToken,
+  checkWhetherUserIsVerified,
   body("title", "Title Cannot be Empty.")
     .notEmpty()
     .isString()
@@ -94,12 +105,19 @@ postRouter.put(
     .isString()
     .withMessage("Category Id should be a string.")
     .isCategoryExist(),
-  authenticateUserToken,
+  validateBodyData,
   PostController.editPost
 );
 
 //Delete post
 postRouter.delete("/:id", authenticateUserToken, PostController.deletePost);
+
+//Delete post by admin
+postRouter.delete(
+  "/admin/:id",
+  authenticateAdminToken,
+  PostController.deletePost
+);
 
 //Report post
 postRouter.put("/report/:id", authenticateUserToken, PostController.reportPost);

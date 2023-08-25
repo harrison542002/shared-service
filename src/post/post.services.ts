@@ -1,7 +1,6 @@
 import { PostStatus, Prisma } from "@prisma/client";
-import { db } from "../utils/db.server";
+import { db } from "../utils";
 import { v4 as uuidv4 } from "uuid";
-import { stat } from "fs";
 
 export type Post = {
   post_id: string;
@@ -27,6 +26,7 @@ export type ChangeablePost = {
   title: string;
   content: string;
   category_id: string;
+  updated_by: string;
 };
 
 /**
@@ -114,13 +114,11 @@ export const changePostStatus = (
  * Delete a post by id
  * Only the creator can delete his or her post except admin.
  * @param {string} id - post_id of a post.
- * @param {string} user_id - created_by of the post
  */
-export const deletePost = (id: string, user_id: string) => {
+export const deletePost = (id: string) => {
   return db.post.delete({
     where: {
       post_id: id,
-      created_by: user_id,
     },
   });
 };
