@@ -1,6 +1,6 @@
 import { ExpressValidator, validationResult } from "express-validator";
 import * as AdminService from "./admin.services";
-import { db } from "../utils/db.server";
+import { db } from "../utils";
 
 export const { body } = new ExpressValidator({
   //Check if there is an admin already existed with this id.
@@ -63,6 +63,32 @@ export const createAnAdmin = async (request: Request, response: Response) => {
       password,
     });
     return response.status(200).json(newAdmin);
+  } catch (error) {
+    return response.status(500).json({ error: error.message });
+  }
+};
+
+export const signInAdmin = async (request: Request, response: Response) => {
+  //Check if there is any errors in body payload
+  const errors = await validationResult(request);
+  if (!errors.isEmpty()) {
+    return response.status(400).json({ error: errors.array() });
+  }
+
+  try {
+    //Create an admin
+    const { name, password } = request.body;
+    const token = await AdminService.adminSignIn(name, password);
+
+    //If token is null, return unauthorized.
+    if (!token) {
+      return response
+        .status(403)
+        .json({ error: { msg: "Incorrect Credentials." } });
+    }
+
+    //Otherwise, send access token to user.
+    return response.status(200).json({ accessToken: token });
   } catch (error) {
     return response.status(500).json({ error: error.message });
   }

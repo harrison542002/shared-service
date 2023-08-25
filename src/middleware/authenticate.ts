@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import * as UserService from "../user/user.services";
 import * as AdminService from "../admin/admin.services";
+import { UserStatus } from "@prisma/client";
 
 const jwt = require("jsonwebtoken");
 
@@ -32,6 +33,12 @@ export const authenticateUserToken = (
 
       request.jwtPayload = payload;
       const { user_id } = request.jwtPayload;
+
+      if (!user_id) {
+        return response
+          .status(403)
+          .json({ error: { msg: "Unauthorized User!" } });
+      }
 
       //Check if the user_id attached in token is correct.
       const user = await UserService.getSingleUserById(user_id);
@@ -86,4 +93,36 @@ export const authenticateAdminToken = (
       next();
     }
   );
+};
+
+/**
+ * Authenticate "admin" with JWT token from "Authorization" header with Bearer as a prefix.
+ */
+export const checkWhetherUserIsVerified = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
+  const user_id = request.jwtPayload.user_id;
+  const user = await UserService.getSingleUserById(user_id);
+
+  //If user haven't verify, limit user for posting, updating the post.
+  if (user.status === UserStatus.No_Verify) {
+    return response.status(400).json({
+      error: {
+        msg: "Your Account haven't verified, please wait for admin to verify.",
+      },
+    });
+  }
+
+  //If user have been suspended, then notify user, the account have been suspended.
+  if (user.status === UserStatus.Suspended) {
+    return response.status(400).json({
+      error: {
+        msg: "Your Account haven been suspended by administration.",
+      },
+    });
+  }
+
+  next();
 };

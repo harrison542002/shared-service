@@ -1,7 +1,7 @@
 import express from "express";
 import * as AdminController from "./admin.controller";
 import { body } from "./admin.controller";
-import { authenticateAdminToken } from "../middleware/authenticate";
+import { authenticateAdminToken } from "../middleware";
 
 const adminRouter = express.Router();
 
@@ -19,7 +19,7 @@ adminRouter.get("/:id", authenticateAdminToken, AdminController.getSingleAdmin);
  * POST : Create a new admin
  * @param @unique login_id,
  * @param @unique name,
- * @param password
+ * @param {string} password
  */
 adminRouter.post(
   "/",
@@ -47,6 +47,28 @@ adminRouter.post(
     .isString()
     .withMessage("Password should be a String."),
   AdminController.createAnAdmin
+);
+
+/**
+ * POST : Check admin credentials by letting admin sign-in and generate an access token.
+ * @param {string} name
+ * @param {string} password
+ */
+adminRouter.post(
+  "/sign-in",
+  body("name", "Name should not be empty.")
+    .notEmpty()
+    .isString()
+    .withMessage("Name should be a String.")
+    .isLength({ min: 4, max: 25 })
+    .withMessage("Length of Name should be at minimum of 4 and maximum of 25.")
+    .matches(/^[A-Za-z0-9 ]+$/) //no special characters
+    .withMessage("Name should not consist of any special characters."),
+  body("password", "Password should not be empty.")
+    .notEmpty()
+    .isString()
+    .withMessage("Password should be a String."),
+  AdminController.signInAdmin
 );
 
 /**

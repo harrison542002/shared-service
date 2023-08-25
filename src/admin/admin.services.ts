@@ -1,4 +1,4 @@
-import { db } from "../utils/db.server";
+import { db, generateAccessToken } from "../utils";
 import * as argon2 from "argon2";
 
 type Admin = {
@@ -56,6 +56,47 @@ export const createAdmin = async (
       created_at: true,
     },
   });
+};
+
+export const adminSignIn = async (name: string, password: string) => {
+  //Fetch admin using username.
+  const admin = await db.admin.findUnique({
+    where: {
+      name: name,
+    },
+  });
+
+  //If admin not found, returns false.
+  if (!admin) {
+    return false;
+  }
+
+  //Check with hash and plain password using argon2.
+  const pwMatch = await argon2.verify(admin.password, password);
+
+  //If password is incorrect, return null
+  if (!pwMatch) {
+    return null;
+  }
+
+  //Generate a new access token.
+  const generatedToken = generateAccessToken({
+    login_id: admin.login_id,
+    name: admin.name,
+  });
+
+  //Update token into database.
+  db.admin.update({
+    where: {
+      login_id: admin.login_id,
+    },
+    data: {
+      token: generatedToken,
+    },
+  });
+
+  //return generated token
+  return generatedToken;
 };
 
 export const updatePassword = async (
