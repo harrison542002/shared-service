@@ -246,3 +246,22 @@ export const getOwnPosts = async (request: Request, response: Response) => {
     return response.status(500).json({ error: { msg: error.message } });
   }
 };
+
+/**
+ * Block the post
+ */
+export const blockPost = async (request: Request, response: Response) => {
+  try {
+    const { name } = request.jwtPayload;
+
+    //Change post status to report
+    const reportedPost = await PostService.changePostStatus(
+      PostStatus.REPORTED,
+      request.params.id,
+      name
+    );
+    return response.status(200).json(reportedPost);
+  } catch (error) {
+    return response.status(500).json({ error: { msg: error.message } });
+  }
+};

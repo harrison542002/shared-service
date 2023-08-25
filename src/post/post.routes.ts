@@ -122,6 +122,9 @@ postRouter.delete(
 //Report post
 postRouter.put("/report/:id", authenticateUserToken, PostController.reportPost);
 
+//Block post by admin
+postRouter.put("/block/:id", authenticateAdminToken, PostController.blockPost);
+
 //Publish post
 postRouter.put(
   "/publish/:id",

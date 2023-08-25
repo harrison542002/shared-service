@@ -16,6 +16,7 @@ A Mini Shared Post service api where user can share posts to each other.
 - MySQL (RDBS)
 - Prisma (ORM)
 - Docker compose
+- POSTMAN (Tool)
 
 ## Features
 

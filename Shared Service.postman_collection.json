@@ -654,6 +654,46 @@
 						"url": "{{URL}}/api/post/009efa8c-0ba7-4a42-8c07-65c1db8a3429"
 					},
 					"response": []
+				},
+				{
+					"name": "Publish post",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{URL}}/api/post/publish/66dcb005-da01-49a5-865d-20fa395ea2cb"
+					},
+					"response": []
+				},
+				{
+					"name": "Block Post",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{URL}}/api/post/block/66dcb005-da01-49a5-865d-20fa395ea2cb"
+					},
+					"response": []
 				}
 			]
 		}

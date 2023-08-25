@@ -82,6 +82,12 @@ export const authenticateAdminToken = (
       request.jwtPayload = payload;
       const { login_id } = request.jwtPayload;
 
+      if (!login_id) {
+        return response
+          .status(403)
+          .json({ error: { msg: "Unauthorized Admin!" } });
+      }
+
       //Check if the login_id attached in token is correct for an admin.
       const admin = await AdminService.getSingleAdmin(login_id);
       if (!admin) {
