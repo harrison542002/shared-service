@@ -122,4 +122,11 @@ postRouter.delete(
 //Report post
 postRouter.put("/report/:id", authenticateUserToken, PostController.reportPost);
 
+//Publish post
+postRouter.put(
+  "/publish/:id",
+  authenticateUserToken,
+  PostController.publishPost
+);
+
 export default postRouter;

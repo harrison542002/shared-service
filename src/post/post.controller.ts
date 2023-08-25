@@ -201,6 +201,25 @@ export const reportPost = async (request: Request, response: Response) => {
 };
 
 /**
+ * Publish the post
+ */
+export const publishPost = async (request: Request, response: Response) => {
+  try {
+    const { user_id } = request.jwtPayload;
+
+    //Change post status to report
+    const publishedPost = await PostService.changePostStatus(
+      PostStatus.PUBLISHED,
+      request.params.id,
+      user_id
+    );
+    return response.status(200).json(publishedPost);
+  } catch (error) {
+    return response.status(500).json({ error: { msg: error.message } });
+  }
+};
+
+/**
  * GET : Get own posts
  */
 export const getOwnPosts = async (request: Request, response: Response) => {
