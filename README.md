@@ -42,7 +42,7 @@ git clone "https://github.com/harrison542002/shared-service.git"
 
 ```bash
 npm run db:start
-npm start
+npm start #Make sure db container has been initilizated before this command.
 ```
 
 ### Create a .env file and copy-paste below variables
@@ -64,8 +64,9 @@ https://testfully.io/blog/import-from-postman/#import-postman-environments
 ### Important
 
 Please replace these three environment variables with access token by sign in
-{{access_token}} - replace access token by sign in as a user.
-{{admin_access_token}} - replace access token by sign in as an admin.
+
+- {{access_token}} : replace access token by sign in as a user.
+- {{admin_access_token}} : replace access token by sign in as an admin.
 
 All routes are accessible in POSTMAN.
 Database schema can be read through "schema.prisma" under "prisma" folder
