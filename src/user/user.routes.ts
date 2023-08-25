@@ -1,15 +1,13 @@
 import express from "express";
 import * as UserController from "./user.controller";
 import { body } from "./user.controller";
-import {
-  authenticateAdminToken,
-  authenticateUserToken,
-} from "../middleware/authenticate";
+import { authenticateAdminToken, authenticateUserToken } from "../middleware";
+import { validateBodyData } from "../middleware";
 
 const userRouter = express.Router();
 
 /**
- * GET : Get users
+ * GET : Get users by "admin"
  */
 userRouter.get("/", authenticateAdminToken, UserController.getUsers);
 
@@ -17,10 +15,14 @@ userRouter.get("/", authenticateAdminToken, UserController.getUsers);
  * GET : Get single user by id
  */
 userRouter.get("/:id", authenticateUserToken, UserController.getUser);
+
+/**
+ * GET : Get single user by id by "admin"
+ */
 userRouter.get("/admin/:id", authenticateAdminToken, UserController.getUser);
 
 /**
- * POST : Create a new user
+ * POST : Create a new user, only by "admin"
  */
 userRouter.post(
   "/admin-create",
@@ -50,9 +52,13 @@ userRouter.post(
     .notEmpty()
     .isString()
     .withMessage("Bio should not be empty."),
+  validateBodyData,
   UserController.createNewUser
 );
 
+/**
+ * POST : User Sign-Up
+ */
 userRouter.post(
   "/user-signup",
   body("email", "Email cannot be empty.")
@@ -80,14 +86,34 @@ userRouter.post(
     .notEmpty()
     .isString()
     .withMessage("Bio should not be empty."),
+  validateBodyData,
   UserController.createNewUser
 );
 
 /**
- * PUT : Update user info
+ * POST : User Sign-In
+ */
+userRouter.post(
+  "/user-sign-in",
+  body("email", "Email cannot be empty.")
+    .notEmpty()
+    .isString()
+    .withMessage("Email should be a string.")
+    .isEmail()
+    .withMessage("Email should be in correct format."),
+  body("password", "Password cannot be empty.")
+    .notEmpty()
+    .isString()
+    .withMessage("Password should be a string."),
+  UserController.signInUser
+);
+
+/**
+ * PUT : Update User Info
  */
 userRouter.put(
   "/:id",
+  authenticateUserToken,
   body("user_name", "Username cannot be empty.")
     .notEmpty()
     .isString()
@@ -102,12 +128,39 @@ userRouter.put(
     .notEmpty()
     .isString()
     .withMessage("Bio should not be empty."),
+  validateBodyData,
   UserController.updateUserData
 );
 
 /**
  * DELETE :Delete user by id
  */
-userRouter.delete("/:id", UserController.deleteUser);
+userRouter.delete("/:id", authenticateAdminToken, UserController.deleteUser);
 
+/**
+ * PUT : Verify user by admin
+ */
+userRouter.put(
+  "/verify/:id",
+  authenticateAdminToken,
+  UserController.verifyUser
+);
+
+/**
+ * PUT : Suspend user by admin
+ */
+userRouter.put(
+  "/suspend/:id",
+  authenticateAdminToken,
+  UserController.suspendUser
+);
+
+/**
+ * PUT : upgrade user by admin
+ */
+userRouter.put(
+  "/upgrade/:id",
+  authenticateAdminToken,
+  UserController.upgradeUser
+);
 export default userRouter;

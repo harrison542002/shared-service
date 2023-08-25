@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import * as UserService from "./user.services";
 import { User, ChangableUserType } from "./user.services";
-import * as argon2 from "argon2";
-import { ExpressValidator, validationResult } from "express-validator";
+import { ExpressValidator } from "express-validator";
+import { UserStatus, UserType } from "@prisma/client";
 
 export const { body } = new ExpressValidator({
   isEmailInUse: async (email: string) => {
@@ -57,18 +57,9 @@ export const getUser = async (request: Request, response: Response) => {
  * @request_body {Omit<User, "user_type" | "status" | "user_id" | "updated_by">}
  */
 export const createNewUser = async (request: Request, response: Response) => {
-  //Check if there is any error
-  const errors = validationResult(request);
-  if (!errors.isEmpty()) {
-    return response.status(400).json({ errors: errors.array() });
-  }
-
   //Get User Data From Request Body
   const user: Omit<User, "user_type" | "status" | "user_id" | "updated_by"> =
     request.body;
-
-  //Hash user password with argon2
-  user.password = await argon2.hash(user.password);
 
   try {
     //Create a new user
@@ -80,21 +71,45 @@ export const createNewUser = async (request: Request, response: Response) => {
 };
 
 /**
+ * Check user credentials, if it is correct, send a access token.
+ */
+export const signInUser = async (request: Request, response: Response) => {
+  try {
+    //Create an admin
+    const { email, password } = request.body;
+    const token = await UserService.userSignIn(email, password);
+
+    //If token is null, return unauthorized.
+    if (!token) {
+      return response
+        .status(403)
+        .json({ error: { msg: "Incorrect Credentials." } });
+    }
+
+    //Otherwise, send access token to user.
+    return response.status(200).json({ accessToken: token });
+  } catch (error) {
+    return response.status(500).json({ error: error.message });
+  }
+};
+
+/**
  * PUT : Update user data
  * @request_body {ChangableUserType} - user can able to change bio and user_name only
  */
 export const updateUserData = async (request: Request, response: Response) => {
-  //Check if there is any error
-  const errors = validationResult(request);
-  if (!errors.isEmpty()) {
-    return response.status(400).json({ errors: errors.array() });
-  }
-
   //Check whether the user with this id exists in the database.
   const user = await UserService.getSingleUserById(request.params.id);
   if (!user) {
     return response.status(400).json({
       error: { msg: "No user exist with this id." },
+    });
+  }
+
+  const updater_id = request.jwtPayload.user_id;
+  if (updater_id !== request.params.id) {
+    return response.status(400).json({
+      error: { msg: "Only own user can modify his or her user data." },
     });
   }
 
@@ -107,6 +122,7 @@ export const updateUserData = async (request: Request, response: Response) => {
       request.params.id,
       changedUser
     );
+
     return response.status(200).json(updatedUser);
   } catch (error) {
     return response.status(500).json({ error: { msg: error.message } });
@@ -130,6 +146,117 @@ export const deleteUser = async (request: Request, response: Response) => {
     //delete user
     const deletedUser = await UserService.deleteUser(request.params.id);
     return response.status(200).json(deletedUser);
+  } catch (error) {
+    return response.status(500).json({ error: { msg: error.message } });
+  }
+};
+
+/**
+ * Verify by admin
+ */
+export const verifyUser = async (request: Request, response: Response) => {
+  //Get login_id from jwt payload
+  const { login_id } = request.jwtPayload;
+
+  try {
+    //Check if the user with this id exists in the database.
+    const user = await UserService.getSingleUserById(request.params.id);
+    if (!user) {
+      return response
+        .status(400)
+        .json({ error: { msg: "User with this id does not exist." } });
+    }
+
+    if (user.status === UserStatus.Verify) {
+      return response.status(400).json({
+        error: { msg: "This user is already verified." },
+      });
+    }
+
+    //Change user status to verify
+    const verifiedUser = UserService.changeUserStatus(
+      UserStatus.Verify,
+      request.params.id,
+      login_id
+    );
+
+    return response.status(200).json(verifiedUser);
+  } catch (error) {
+    return response.status(500).json({ error: { msg: error.message } });
+  }
+};
+
+/**
+ * Suspend user by admin
+ */
+export const suspendUser = async (request: Request, response: Response) => {
+  //Get login_id from jwt payload
+  const { login_id } = request.jwtPayload;
+
+  try {
+    //Check if the user with this id exists in the database.
+    const user = await UserService.getSingleUserById(request.params.id);
+    if (!user) {
+      return response
+        .status(400)
+        .json({ error: { msg: "User with this id does not exist." } });
+    }
+
+    if (user.status === UserStatus.Suspended) {
+      return response.status(400).json({
+        error: { msg: "This user is already suspended." },
+      });
+    }
+
+    //Change user status to verify
+    const suspendUser = UserService.changeUserStatus(
+      UserStatus.Suspended,
+      request.params.id,
+      login_id
+    );
+
+    return response.status(200).json(suspendUser);
+  } catch (error) {
+    return response.status(500).json({ error: { msg: error.message } });
+  }
+};
+
+/**
+ * Upgrade user type to premimun
+ */
+export const upgradeUser = async (request: Request, response: Response) => {
+  //Get login_id from jwt payload
+  const { login_id } = request.jwtPayload;
+
+  try {
+    //Check if the user with this id exists in the database.
+    const user = await UserService.getSingleUserById(request.params.id);
+    if (!user) {
+      return response
+        .status(400)
+        .json({ error: { msg: "User with this id does not exist." } });
+    }
+
+    if (user.status !== UserStatus.Verify) {
+      return response.status(400).json({
+        error: { msg: "Unverified user cannot be upgraded to premium." },
+      });
+    }
+
+    if (user.user_type === UserType.PREMIUM) {
+      return response.status(400).json({
+        error: { msg: "This user is already upgraded as premium." },
+      });
+    }
+
+    //Change user status to verify
+    const upgradedUser = UserService.changeUserType(
+      UserType.PREMIUM,
+      request.params.id,
+      login_id
+    );
+
+    return response.status(200).json(upgradedUser);
   } catch (error) {
     return response.status(500).json({ error: { msg: error.message } });
   }

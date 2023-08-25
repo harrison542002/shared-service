@@ -1,7 +1,7 @@
 import { UserStatus, UserType } from "@prisma/client";
 import { v4 as uuidv4 } from "uuid";
-import { db } from "../utils/db.server";
-import * as AuthentcationService from "../utils/authentication";
+import { db, generateAccessToken } from "../utils";
+import * as argon2 from "argon2";
 
 export type User = {
   user_id: string;
@@ -74,13 +74,16 @@ export const getUserByEmail = (email: string) => {
  * Create a new user
  * @param {Omit<User, "user_type" | "status" | "user_id" | "updated_by">} user - a user data payload by omitting user_type, status, user_id and updated_by
  **/
-export const createUser = (
+export const createUser = async (
   user: Omit<User, "user_type" | "status" | "user_id" | "updated_by">
 ): Promise<Omit<User, "password" | "token"> | null> => {
   const generatedUUID = uuidv4();
 
+  //Hash user password with argon2
+  user.password = await argon2.hash(user.password);
+
   //Generate a JWT token using userid and username
-  const token = AuthentcationService.generateAccessToken({
+  const token = generateAccessToken({
     user_id: generatedUUID,
   });
 
@@ -122,6 +125,83 @@ export const deleteUser = (id: string) => {
   return db.user.delete({
     where: {
       user_id: id,
+    },
+    select: selectedUserFormat,
+  });
+};
+
+/**
+ * Verify User Credentials
+ */
+export const userSignIn = async (email: string, password: string) => {
+  //Fetch user with email
+  const user = await db.user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  //If user not found, returns false.
+  if (!user) {
+    return false;
+  }
+
+  //Check with hash and plain password using argon2.
+  const pwMatch = await argon2.verify(user.password, password);
+
+  //If password is incorrect, return null
+  if (!pwMatch) {
+    return null;
+  }
+
+  //Generate a new access token.
+  const generatedToken = generateAccessToken({
+    user_id: user.user_id,
+  });
+
+  //Update token into database.
+  db.user.update({
+    where: {
+      user_id: user.user_id,
+    },
+    data: {
+      token: generatedToken,
+    },
+  });
+
+  //return generated token
+  return generatedToken;
+};
+
+export const changeUserStatus = async (
+  status: UserStatus,
+  user_id: string,
+  admin_id: string
+) => {
+  return db.user.update({
+    where: {
+      user_id: user_id,
+    },
+    data: {
+      status: status,
+      updated_by: admin_id,
+    },
+    select: selectedUserFormat,
+  });
+};
+
+export const changeUserType = async (
+  user_type: UserType,
+  user_id: string,
+  admin_id: string
+) => {
+  return db.user.update({
+    where: {
+      user_id: user_id,
+    },
+    data: {
+      user_type,
+      updated_by: admin_id,
     },
     select: selectedUserFormat,
   });
