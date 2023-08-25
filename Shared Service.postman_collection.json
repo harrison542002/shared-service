@@ -1,0 +1,703 @@
+{
+	"info": {
+		"_postman_id": "11c5c157-07d7-4e0a-82fc-5cb1945d5354",
+		"name": "Shared Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "19897006"
+	},
+	"item": [
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Get admins",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{URL}}/api/admin"
+					},
+					"response": []
+				},
+				{
+					"name": "Get single admin",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{URL}}/api/admin/aungthih"
+					},
+					"response": []
+				},
+				{
+					"name": "Create an admin",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"login_id\": \"test1235\",\r\n    \"name\" : \"aung2323\",\r\n    \"password\" : \"password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL}}/api/admin"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Admin Password",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\" : \"testing\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL}}/api/admin/test1235"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete admin",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{URL}}/api/admin/test1235"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin Sign-In",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"aungthihamdy\",\r\n    \"password\" : \"password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL}}/api/admin/sign-in"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "Get Categories",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{URL}}/api/category"
+					},
+					"response": []
+				},
+				{
+					"name": "Get single category",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{URL}}/api/category/2c597225-0a36-4724-842c-7bc3503bfaac"
+					},
+					"response": []
+				},
+				{
+					"name": "Create a category",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"testing2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL}}/api/category"
+					},
+					"response": []
+				},
+				{
+					"name": "Update category",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Testing\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL}}/api/category/2c597225-0a36-4724-842c-7bc3503bfaac"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Category",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{URL}}/api/category/5a8828ec-58a5-4040-9487-716845f5a80b"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "User Sign up",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"testing1@gmail.com\",\r\n    \"password\" : \"harris5402##\",\r\n    \"user_name\" : \"heyaung\",\r\n    \"bio\" : \"Hello World!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL}}/api/user/user-signup"
+					},
+					"response": []
+				},
+				{
+					"name": "Get users",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{URL}}/api/user"
+					},
+					"response": []
+				},
+				{
+					"name": "Get single user by id",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{URL}}/api/user/9ac82a45-bb1c-4248-8940-2d6df3912091"
+					},
+					"response": []
+				},
+				{
+					"name": "Update user data",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_name\" : \"aungaungaung\",\r\n    \"bio\" : \"Hi, I am a guy.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL}}/api/user/58bf9c51-ebf9-4f25-ba95-449739c987db"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{URL}}/api/user/f8e695ce-0255-4a1f-81f1-456ff769b55f"
+					},
+					"response": []
+				},
+				{
+					"name": "Create user by admin",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"aung@gmail.com\",\r\n    \"password\" : \"harris5402##\",\r\n    \"user_name\" : \"heyaung\",\r\n    \"bio\" : \"Hello World!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL}}/api/user/admin-create"
+					},
+					"response": []
+				},
+				{
+					"name": "User Sign in",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"aung@gmail.com\",\r\n    \"password\" : \"password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL}}/api/user/user-sign-in"
+					},
+					"response": []
+				},
+				{
+					"name": "Verify User By Admin",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{URL}}/api/user/verify/55c5da14-b46f-4352-8723-86649c6e00cb"
+					},
+					"response": []
+				},
+				{
+					"name": "Suspend User By Admin",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{URL}}/api/user/suspend/55c5da14-b46f-4352-8723-86649c6e00cb"
+					},
+					"response": []
+				},
+				{
+					"name": "Upgrade user type by admin",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{URL}}/api/user/upgrade/55c5da14-b46f-4352-8723-86649c6e00cb"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Post",
+			"item": [
+				{
+					"name": "Create post",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\" : \"Testing Post\",\r\n    \"content\" : \"Hey guys, this is aung.\",\r\n    \"category_id\" : \"ab71bb46-7c4b-41f1-a10f-1d10442bdf31\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL}}/api/post"
+					},
+					"response": []
+				},
+				{
+					"name": "Get posts",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{URL}}/api/post"
+					},
+					"response": []
+				},
+				{
+					"name": "Get single post",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{URL}}/api/post/d80f66c9-54da-4853-a608-6aa675501cd4"
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Post",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{second_user_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\" : \"testing....\",\r\n    \"content\" : \"testing......\",\r\n    \"category_id\" : \"2c597225-0a36-4724-842c-7bc3503bfaac\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL}}/api/post/b30f4bc7-3af8-4795-a6a8-a142b11fcd3b"
+					},
+					"response": []
+				},
+				{
+					"name": "Report Post",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{second_user_token}} ",
+								"type": "text"
+							}
+						],
+						"url": "{{URL}}/api/post/report/b30f4bc7-3af8-4795-a6a8-a142b11fcd3b"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Self Posts",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{URL}}/api/post/get/own"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Post By Admin",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{URL}}/api/post/admin/ecc5849d-fb4f-41d2-b798-8808284f05a3"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Post By User",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{URL}}/api/post/009efa8c-0ba7-4a42-8c07-65c1db8a3429"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "URL",
+			"value": "http://localhost:8000\n",
+			"type": "string"
+		},
+		{
+			"key": "access_token\n",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNThiZjljNTEtZWJmOS00ZjI1LWJhOTUtNDQ5NzM5Yzk4N2RiIiwiaWF0IjoxNjkyOTMzNjMyLCJleHAiOjE2...\n",
+			"type": "string"
+		},
+		{
+			"key": "admin_access_token\n",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImF1bmd0aGloIiwibmFtZSI6ImF1bmd0aGloYW1keSIsImlhdCI6MTY5MjkzMTcwMSwiZXhwIjoxNjkyOTY3NzAxfQ.eI_NcE1Y5lbZ4SitLJ6t12liX7yHb_X0mf-ICaphUEg",
+			"type": "string"
+		},
+		{
+			"key": "second_user_token\n",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzBiY2IxNTgtMzE4NS00MDZlLThiYWItYmNjMjM3NzE2ODkzIiwiaWF0IjoxNjkyOTM5MDk1LCJleHAiOjE2OTI5NzUwOTV9.wvu0th_lxXhJl-OWkeyOf1VfLKDDIiIr2S8_i2a_d3Q",
+			"type": "string"
+		}
+	]
+}

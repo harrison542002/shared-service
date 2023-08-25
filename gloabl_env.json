@@ -1,0 +1,33 @@
+{
+	"id": "aa313a29-94b2-4413-82b0-cd2d36cba7a0",
+	"values": [
+		{
+			"key": "URL",
+			"value": "localhost:8000",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "admin_access_token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6ImF1bmd0aGloIiwiaWF0IjoxNjkyOTMwMDkyLCJleHAiOjE2OTI5NjYwOTJ9.ZDME0NQIn5nKEP1ieBVjBJc9lVXEkEmhciIdz_iCk78",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "second_user_token",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"name": "Globals",
+	"_postman_variable_scope": "globals",
+	"_postman_exported_at": "2023-08-25T10:07:07.279Z",
+	"_postman_exported_using": "Postman/10.17.3"
+}
