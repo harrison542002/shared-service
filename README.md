@@ -53,7 +53,7 @@ PORT=8000
 TOKEN_SECRET=c88571884e2a8ecb0eb10df4808e4b6cce5d0c2cec200dcdf9275b522bf19bf2a1ec9d9aa978c0a9606a9270636d3afac2d4d688d4c8a243d5436bd1b1c5627f
 ```
 
-### Import the Shared Service.postman_collection.json into your Postman Application
+### Import JSON into your Postman Application
 
 Import the "Shared Service.postman_collection.json" by followed this tutorial into POSTMAN
 https://shorturl.at/gjlC2
